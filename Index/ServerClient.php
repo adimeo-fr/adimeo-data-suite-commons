@@ -25,12 +25,18 @@ class ServerClient
    */
   private $isLegacy;
 
+  /**
+   * @var array
+   */
+  private $options;
+
   public function __construct($serverUrl, $isLegacy)
   {
 
     $this->serverUrl = $serverUrl;
     $this->client = new Client();
     $this->isLegacy = $isLegacy;
+    $this->options = [];
 
   }
 
@@ -41,7 +47,9 @@ class ServerClient
   private function request($method, $uri, $params = [], $body = null, $bodyAsString = false) {
 
     try {
-      $reqParams = [];
+      // Add request options
+      $reqParams = $this->options;
+      
       if($body != null) {
         $reqParams['body'] = $bodyAsString ? $body : json_encode($body);
         $reqParams['headers']['Content-type'] = 'application/json';
@@ -238,6 +246,25 @@ class ServerClient
 
   public function restoreSnapshot($repositoryName, $name, $settings) {
     return $this->request('POST', '/_snapshot/' . $repositoryName . '/' . $name . '/_restore', [], $settings);
+  }
+
+  /**
+   * Get client options
+   *
+   * @return array
+   */
+  public function getOptions() {
+    return $this->options;
+  }
+
+  /**
+   * Set client options
+   *
+   * @param array $options
+   * @return void
+   */
+  public function setOptions($options) {
+    $this->options = $options;
   }
 
 }
