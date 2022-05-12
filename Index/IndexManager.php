@@ -134,9 +134,10 @@ class IndexManager
       unset($settings['uuid']);
     if (isset($settings['provided_name']))
       unset($settings['provided_name']);
-    $settings['analysis']['analyzer']['transliterator'] = array(
-      'filter' => array('asciifolding', 'lowercase'),
-      'tokenizer' => 'keyword'
+    if(!isset($settings['analysis']['analyzer']))
+      $settings['analysis']['analyzer'] = [];
+    $settings['analysis']['normalizer']['transliterator'] = array(
+      'filter' => array('asciifolding', 'lowercase')
     );
     if(!$this->isLegacy()) {
       foreach($settings['analysis']['analyzer'] as $analyzer => $def) {
@@ -146,6 +147,7 @@ class IndexManager
               unset($settings['analysis']['analyzer'][$analyzer]['filter'][$index]);
             }
           }
+          $settings['analysis']['analyzer'][$analyzer]['filter'] = array_values($settings['analysis']['analyzer'][$analyzer]['filter']);
         }
       }
     }
