@@ -28,9 +28,10 @@ class IndexManager
    */
   private $maxReplicas = 0;
 
-  public function __construct($elasticsearchServerUrl, $isLegacy = false, $maxReplicas = 0) {
+  public function __construct($elasticsearchServerUrl, $isLegacy = false, $maxReplicas = 0, $options = []) {
 
     $this->serverClient = new ServerClient($elasticsearchServerUrl, $isLegacy === '1' || $isLegacy === 1);
+    $this->serverClient->setOptions($options);
 
     if($isLegacy === '1' || $isLegacy === 1) {
       $this->isLegacy = true;
@@ -133,10 +134,9 @@ class IndexManager
       unset($settings['uuid']);
     if (isset($settings['provided_name']))
       unset($settings['provided_name']);
-    if(!isset($settings['analysis']['analyzer']))
-      $settings['analysis']['analyzer'] = [];
-    $settings['analysis']['normalizer']['transliterator'] = array(
-      'filter' => array('asciifolding', 'lowercase')
+    $settings['analysis']['analyzer']['transliterator'] = array(
+      'filter' => array('asciifolding', 'lowercase'),
+      'tokenizer' => 'keyword'
     );
     if(!$this->isLegacy()) {
       foreach($settings['analysis']['analyzer'] as $analyzer => $def) {
@@ -146,7 +146,6 @@ class IndexManager
               unset($settings['analysis']['analyzer'][$analyzer]['filter'][$index]);
             }
           }
-          $settings['analysis']['analyzer'][$analyzer]['filter'] = array_values($settings['analysis']['analyzer'][$analyzer]['filter']);
         }
       }
     }

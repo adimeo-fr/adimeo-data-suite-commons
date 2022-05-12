@@ -28,12 +28,13 @@ class StatIndexManager
    */
   private $maxReplicas = 0;
 
-  public function __construct($elasticsearchServerUrl, $numberOfShards = 1, $numberOfReplicas = 1, $isLegacy = false, $maxReplicas = 0) {
+  public function __construct($elasticsearchServerUrl, $numberOfShards = 1, $numberOfReplicas = 1, $isLegacy = false, $maxReplicas = 0, $options = []) {
 
     $this->indexNumberOfShards = $numberOfShards;
     $this->indexNumberOfReplicas = $numberOfReplicas;
 
     $this->serverClient = new ServerClient($elasticsearchServerUrl, $isLegacy === '1' || $isLegacy === 1);
+    $this->serverClient->setOptions($options);
     $this->isLegacy = $isLegacy;
     $this->maxReplicas = $maxReplicas;
   }
