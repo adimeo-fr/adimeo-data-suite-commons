@@ -170,7 +170,7 @@ abstract class Datasource extends PersistentObject
                 }
               }
             }
-            if ($v != null) {
+            if (!is_null($v)) {
               $document['filter_' . $filter['id'] . '.' . $k] = $v;
             }
             unset($v);
@@ -429,7 +429,7 @@ abstract class Datasource extends PersistentObject
       if(is_array($v)) {
         $this->cleanArray($array[$k]);
       }
-      elseif(is_numeric($v)) {
+      elseif(is_numeric($v) || is_bool($v)) {
         $array[$k] = $v;
       }
       else {
