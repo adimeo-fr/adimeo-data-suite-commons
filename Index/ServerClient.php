@@ -64,7 +64,20 @@ class ServerClient
       else {
         $querystring = '';
       }
-      $res = $this->client->request($method, $this->serverUrl . $uri . $querystring, $reqParams);
+
+      $servers = explode(",", $this->serverUrl);
+      shuffle($servers);
+      $tryToContactServer = true;
+      while ($tryToContactServer && count($servers) > 0) {
+        try {
+          $res = $this->client->request($method, array_shift($servers) . $uri . $querystring, $reqParams);
+          $tryToContactServer = false;
+        } catch (\Exception $e) {
+          if (count($servers) === 0 ) {
+            throw $e;
+          }
+        }
+      }
     }
     catch(\Exception $ex) {
       /** @var ClientException $ex */
