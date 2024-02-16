@@ -433,6 +433,8 @@ abstract class Datasource extends PersistentObject
                 $this->cleanArray($array[$k]);
             } elseif (is_numeric($v) || is_bool($v)) {
                 $array[$k] = $v;
+            } elseif (trim($v) === '') {
+                unset($array[$k]);
             } else {
                 $array[$k] = $this->cleanNonUtf8Chars($v);
             }
