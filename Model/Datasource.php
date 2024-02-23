@@ -136,6 +136,16 @@ abstract class Datasource extends PersistentObject
                     $procFilter->setIsHTML($filter['isHTML']);
                     $filterOutput = $procFilter->execute($document, $this);
                     if (empty($document)) {
+                        $target_r = explode('.', $definition['target']);
+                        $indexName = $target_r[0];
+                        $mappingName = $target_r[1];
+                        $this->execIndexManager->deleteByQuery($indexName, [
+                            'query' => [
+                                'term' => [
+                                    '_id' => $data['row']['uid'] . '_' . $data['row']['store_uid']
+                                ]
+                            ]
+                        ], $mappingName);
                         break;
                     }
                     if (get_class($procFilter) == SmartMapper::class) {
