@@ -139,13 +139,7 @@ abstract class Datasource extends PersistentObject
                         $target_r = explode('.', $definition['target']);
                         $indexName = $target_r[0];
                         $mappingName = $target_r[1];
-                        $this->execIndexManager->deleteByQuery($indexName, [
-                            'query' => [
-                                'term' => [
-                                    '_id' => $data['row']['uid'] . '_' . $data['row']['store_uid']
-                                ]
-                            ]
-                        ], $mappingName);
+                        $this->execIndexManager->unsafeDelete($indexName, $data['row']['uid'] . '_' . $data['row']['store_uid'], $mappingName);
                         break;
                     }
                     if (get_class($procFilter) == SmartMapper::class) {

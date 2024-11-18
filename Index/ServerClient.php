@@ -211,7 +211,7 @@ class ServerClient
   }
 
   public function bulk($bulkString) {
-    return $this->request('POST', '/_bulk', [], $bulkString, true);
+    return $this->request('POST', '/_bulk?refresh=true', [], $bulkString, true);
   }
 
   public function analyze($indexName, $analyzer, $text) {
